@@ -54,7 +54,8 @@ template <Is16Bit Ty> auto chunk_u8(auto const &read_buffer) {
 
 namespace cobot {
 
-MyCobot::MyCobot(const char *port) : serial{std::make_shared<Comms>(port)} {}
+MyCobot::MyCobot(std::string_view port)
+    : serial{std::make_shared<Comms>(port)} {}
 
 MyCobot::~MyCobot() {
   stop();

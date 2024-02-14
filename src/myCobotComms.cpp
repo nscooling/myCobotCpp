@@ -2,7 +2,7 @@
 
 namespace cobot {
 
-Comms::Comms(const char *port) : serial{io, port} {
+Comms::Comms(std::string_view port) : serial{io, std::string{port}} {
   serial.set_option(boost::asio::serial_port_base::baud_rate(115200));
 }
 
