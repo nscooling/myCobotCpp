@@ -1,0 +1,26 @@
+[
+{
+  "directory": "/Users/niallcooling/Documents/myCobot-dev/myCobot-test-code/build",
+  "command": "/usr/bin/clang++ -DBOOST_SYSTEM_DYN_LINK -DBOOST_SYSTEM_NO_LIB -I/Users/niallcooling/Documents/myCobot-dev/myCobot-test-code/inc -isystem /opt/homebrew/include -g -std=gnu++2b -arch arm64 -isysroot /Library/Developer/CommandLineTools/SDKs/MacOSX14.2.sdk -Wall -Wextra -pedantic -Wconversion -o CMakeFiles/SerialPortProject.dir/src/main.cpp.o -c /Users/niallcooling/Documents/myCobot-dev/myCobot-test-code/src/main.cpp",
+  "file": "/Users/niallcooling/Documents/myCobot-dev/myCobot-test-code/src/main.cpp",
+  "output": "CMakeFiles/SerialPortProject.dir/src/main.cpp.o"
+},
+{
+  "directory": "/Users/niallcooling/Documents/myCobot-dev/myCobot-test-code/build",
+  "command": "/usr/bin/clang++ -DBOOST_SYSTEM_DYN_LINK -DBOOST_SYSTEM_NO_LIB -I/Users/niallcooling/Documents/myCobot-dev/myCobot-test-code/inc -isystem /opt/homebrew/include -g -std=gnu++2b -arch arm64 -isysroot /Library/Developer/CommandLineTools/SDKs/MacOSX14.2.sdk -Wall -Wextra -pedantic -Wconversion -o CMakeFiles/SerialPortProject.dir/src/myCobot.cpp.o -c /Users/niallcooling/Documents/myCobot-dev/myCobot-test-code/src/myCobot.cpp",
+  "file": "/Users/niallcooling/Documents/myCobot-dev/myCobot-test-code/src/myCobot.cpp",
+  "output": "CMakeFiles/SerialPortProject.dir/src/myCobot.cpp.o"
+},
+{
+  "directory": "/Users/niallcooling/Documents/myCobot-dev/myCobot-test-code/build",
+  "command": "/usr/bin/clang++ -DBOOST_SYSTEM_DYN_LINK -DBOOST_SYSTEM_NO_LIB -I/Users/niallcooling/Documents/myCobot-dev/myCobot-test-code/inc -isystem /opt/homebrew/include -g -std=gnu++2b -arch arm64 -isysroot /Library/Developer/CommandLineTools/SDKs/MacOSX14.2.sdk -Wall -Wextra -pedantic -Wconversion -o CMakeFiles/SerialPortProject.dir/src/myCobotComms.cpp.o -c /Users/niallcooling/Documents/myCobot-dev/myCobot-test-code/src/myCobotComms.cpp",
+  "file": "/Users/niallcooling/Documents/myCobot-dev/myCobot-test-code/src/myCobotComms.cpp",
+  "output": "CMakeFiles/SerialPortProject.dir/src/myCobotComms.cpp.o"
+},
+{
+  "directory": "/Users/niallcooling/Documents/myCobot-dev/myCobot-test-code/build",
+  "command": "/usr/bin/clang++ -DBOOST_SYSTEM_DYN_LINK -DBOOST_SYSTEM_NO_LIB -I/Users/niallcooling/Documents/myCobot-dev/myCobot-test-code/inc -isystem /opt/homebrew/include -g -std=gnu++2b -arch arm64 -isysroot /Library/Developer/CommandLineTools/SDKs/MacOSX14.2.sdk -Wall -Wextra -pedantic -Wconversion -o CMakeFiles/SerialPortProject.dir/src/utilities.cpp.o -c /Users/niallcooling/Documents/myCobot-dev/myCobot-test-code/src/utilities.cpp",
+  "file": "/Users/niallcooling/Documents/myCobot-dev/myCobot-test-code/src/utilities.cpp",
+  "output": "CMakeFiles/SerialPortProject.dir/src/utilities.cpp.o"
+}
+]

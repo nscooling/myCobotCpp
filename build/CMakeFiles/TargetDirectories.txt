@@ -1,0 +1,3 @@
+/Users/niallcooling/Documents/myCobot-dev/myCobot-test-code/build/CMakeFiles/SerialPortProject.dir
+/Users/niallcooling/Documents/myCobot-dev/myCobot-test-code/build/CMakeFiles/edit_cache.dir
+/Users/niallcooling/Documents/myCobot-dev/myCobot-test-code/build/CMakeFiles/rebuild_cache.dir
