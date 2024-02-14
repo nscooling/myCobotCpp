@@ -30,7 +30,7 @@ private:
   std::shared_ptr<Comms> serial;
 
 public:
-  explicit MyCobot(const char *port);
+  explicit MyCobot(std::string_view port);
   ~MyCobot();
 
   MyCobot(const MyCobot &) = delete;

@@ -14,11 +14,13 @@ using cobot::Green;
 using cobot::Red;
 
 int main(int argc, char *argv[]) {
-  auto port = "/dev/tty.usbserial-56E30047721";
-  if (argc == 2) {
+  std::string port;
+  if (argc == 1) {
+    port = cobot::macos::find_port();
+  } else if (argc == 2) {
     port = argv[1];
   } else if (argc > 2) {
-    std::cerr << "Usage: " << argv[0] << " <serial port>\n";
+    std::cerr << "Usage: " << argv[0] << " [<serial port>]\n";
     return 1;
   }
 

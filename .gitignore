@@ -31,3 +31,6 @@
 *.out
 *.app
 build/
+
+# Debug files
+.port_list

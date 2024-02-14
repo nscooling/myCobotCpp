@@ -15,7 +15,7 @@ constexpr std::uint8_t end_frame = 0xfa;
 
 class Comms {
 public:
-  explicit Comms(const char *port);
+  explicit Comms(std::string_view port);
   Comms(const Comms &) = delete;
   Comms &operator=(const Comms &) = delete;
 
