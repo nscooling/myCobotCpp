@@ -1,5 +1,6 @@
 #include "myCobot.h"
 
+#include <cassert>
 #include <cstdint>
 #include <fstream>
 #include <iostream>
@@ -34,11 +35,13 @@ auto find_port() -> std::string {
   }
   std::string line;
   while (std::getline(port_list, line)) {
-    if (std::string_view(line).contains("USB Single Serial") == true) {
+    if (std::string_view(line).contains("USB Single Serial")) {
       std::getline(port_list, line);
+      assert(std::string_view(line).contains("idProduct"));
       auto idProduct = std::stoi(line.substr(line.rfind("= ") + 2));
 
       std::getline(port_list, line);
+      assert(std::string_view(line).contains("kUSBSerialNumberString"));
       auto kUSBSerialNumberString_raw = line.substr(line.rfind("= ") + 2);
       const auto first_quote = kUSBSerialNumberString_raw.find('\"');
       const auto last_quote = kUSBSerialNumberString_raw.rfind('\"');
@@ -46,9 +49,11 @@ auto find_port() -> std::string {
           first_quote + 1, last_quote - first_quote - 1);
 
       std::getline(port_list, line);
+      assert(std::string_view(line).contains("idVendor"));
       auto idVendor = std::stoi(line.substr(line.rfind("= ") + 2));
 
       std::getline(port_list, line);
+      assert(std::string_view(line).contains("kUSBAddress"));
       auto kUSBAddress = std::stoi(line.substr(line.rfind("= ") + 2));
 
       if (idProduct == 0x55d4 && idVendor == 0x1a86) {
