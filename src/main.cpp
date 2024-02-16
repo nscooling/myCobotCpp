@@ -1,8 +1,12 @@
 #include <array>
-#include <boost/asio.hpp>
 #include <cstdint>
 #include <iostream>
 #include <thread>
+
+// The appears to be a bug In the Ubuntu/GCC version of the boost library
+// with this untility is required to fix the issue
+#include <utility>
+#include <boost/asio.hpp>
 
 #include "myCobot.h"
 #include "utilities.h"
@@ -26,7 +30,7 @@ int main(int argc, char *argv[]) {
 
   cobot::MyCobot mc(port);
 
-  auto print_all = [&]() {
+  [[maybe_unused]] auto print_all = [&]() {
     auto angles = mc.get_angles();
     std::cout << "get_angles = ";
     cobot::print_list(std::span{angles});

@@ -2,9 +2,13 @@
 #define MYCOBOT_COMMS_H
 
 #include <array>
-#include <boost/asio.hpp>
 #include <cstdint>
 #include <vector>
+
+// The appears to be a bug In the Ubuntu/GCC version of the boost library
+// with this untility is required to fix the issue
+#include <utility>
+#include <boost/asio.hpp>
 
 #include "myCobotCommands.h"
 
@@ -39,10 +43,13 @@ private:
     constexpr std::size_t packet_size =
         frame_size + 3; // 3 => frame_identity, frame_identity, frame_size
 
-    std::array<std::uint8_t, packet_size> frame = {
+    // std::array<std::uint8_t, packet_size> frame = {
+    //     frame_identity,    frame_identity,        frame_size,
+    //     std::uint8_t(cmd), std::uint8_t(args)..., end_frame};
+    // return frame;
+    return std::array<std::uint8_t, packet_size>{
         frame_identity,    frame_identity,        frame_size,
         std::uint8_t(cmd), std::uint8_t(args)..., end_frame};
-    return frame;
   }
 
   template <typename... Ts>
