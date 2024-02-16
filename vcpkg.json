@@ -1,0 +1,10 @@
+{
+    "name": "mycobot",
+    "version-string": "1.0.0",
+    "dependencies": [
+        {
+            "name": "boost",
+            "version>=": "1.84.0"
+        }
+    ]
+}
