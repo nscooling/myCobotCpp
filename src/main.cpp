@@ -4,7 +4,18 @@
 #include <iostream>
 #include <thread>
 
-#include "myCobot.h"
+// The appears to be a bug In the Ubuntu/GCC version of the boost library
+// with this untility is required to fix the issue
+#include <boost/asio.hpp>
+#include <utility>
+
+// #include "myCobot.h"
+// using cobot::Blue;
+// using cobot::Green;
+// using cobot::Red;
+
+#include "myCobotSimple.h"
+
 #include "utilities.h"
 
 using namespace std::chrono_literals;
@@ -24,9 +35,10 @@ int main(int argc, char *argv[]) {
     return 1;
   }
 
-  cobot::MyCobot mc(port);
+  // cobot::MyCobot mc(port);
+  cobot::MyCobotSimple mc(port);
 
-  auto print_all = [&]() {
+  [[maybe_unused]] auto print_all = [&]() {
     auto angles = mc.get_angles();
     std::cout << "get_angles = ";
     cobot::print_list(std::span{angles});
@@ -46,37 +58,62 @@ int main(int argc, char *argv[]) {
   }
   std::cout << "Robot is connected\n";
 
-  if (auto atom_is_on = mc.is_powered_on()) {
+  if (mc.is_powered_on()) {
     std::cout << "Atom is powered on\n";
   } else {
     std::cout << "Atom is powered off\n";
   }
 
-#if 1
-  // mc.set_angle(cobot::Joint::J5, 0.0f, 50);
-  mc.J5.set_angle(90.0f, 50);
+#if 0
+  // // mc.set_angle(cobot::Joint::J5, 0.0f, 50);
+  // mc.J5.set_angle(90.0f, 50);
+  // std::this_thread::sleep_for(3s);
+  // // print_all();
+  // auto j5_angle = mc.J5.get_angle();
+  // std::cout << "J5 angle = " << j5_angle << std::endl;
+  // mc.J5.set_angle(-90.0f, 50);
+  // std::this_thread::sleep_for(3s);
+  // // print_all();
+  // j5_angle = mc.J5.get_angle();
+  // std::cout << "J5 angle = " << j5_angle << std::endl;
+  // mc.J5.set_angle(0.0f, 50);
+  // std::this_thread::sleep_for(3s);
+  // // print_all();
+  // j5_angle = mc.J5.get_angle();
+  // std::cout << "J5 angle = " << j5_angle << std::endl;
+
+
+  mc.J5.set_encoder(1024);
   std::this_thread::sleep_for(3s);
-  print_all();
+  // print_all();
   auto j5_angle = mc.J5.get_angle();
   std::cout << "J5 angle = " << j5_angle << std::endl;
-  mc.J5.set_angle(-90.0f, 50);
-  std::this_thread::sleep_for(3s);
-  print_all();
-  j5_angle = mc.J5.get_angle();
-  std::cout << "J5 angle = " << j5_angle << std::endl;
-  mc.J5.set_angle(0.0f, 50);
-  std::this_thread::sleep_for(3s);
-  print_all();
-  j5_angle = mc.J5.get_angle();
-  std::cout << "J5 angle = " << j5_angle << std::endl;
-  mc.J5.set_encoder(1028);
-  std::this_thread::sleep_for(3s);
-  print_all();
-  j5_angle = mc.J5.get_angle();
-  std::cout << "J5 angle = " << j5_angle << std::endl;
-#endif
 
-  cycle_colors(mc);
+
+  mc.J5.set_encoder(2048);
+  std::this_thread::sleep_for(3s);
+  // print_all();
+  j5_angle = mc.J5.get_angle();
+  std::cout << "J5 angle = " << j5_angle << std::endl;
+#else
+  print_all();
+
+  mc.set_angle(cobot::Joint::J5, 90.0f, 50);
+  std::this_thread::sleep_for(3s);
+  print_all();
+
+  mc.set_angle(cobot::Joint::J5, -90.0f, 50);
+  std::this_thread::sleep_for(3s);
+  print_all();
+
+  mc.set_angle(cobot::Joint::J5, 0.0f, 50);
+  std::this_thread::sleep_for(3s);
+  print_all();
+
+#endif
+  // mc.set_color(Red{0x00}, Green{0x00}, Blue{0x00});
+  mc.set_color(0, 0, 0);
+  // cycle_colors(mc);
 
   auto version = mc.get_basic_version();
   std::cout << "get_basic_version = " << version << std::endl;

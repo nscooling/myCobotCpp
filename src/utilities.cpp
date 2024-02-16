@@ -21,6 +21,7 @@ void cycle_colors(MyCobot &mc, unsigned int num_cycles) {
   }
 }
 
+
 namespace macos {
 auto find_port() -> std::string {
   std::string port;
