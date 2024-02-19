@@ -8,7 +8,6 @@ namespace cobot {
 
 class MyCobot;
 
-
 template <typename T, std::size_t len> void print_list(std::span<T, len> span) {
   std::cout << "[ ";
   // for (auto a : span) {
