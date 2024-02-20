@@ -2,9 +2,13 @@
 #define MYCOBOT_COMMS_H
 
 #include <array>
-#include <boost/asio.hpp>
 #include <cstdint>
 #include <vector>
+
+#include <utility>
+// The appears to be a bug In the Ubuntu/GCC version of the boost library
+// with this untility is required to fix the issue
+#include <boost/asio.hpp>
 
 #include "myCobotCommands.h"
 
