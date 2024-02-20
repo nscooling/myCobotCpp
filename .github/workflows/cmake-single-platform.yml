@@ -20,7 +20,7 @@ jobs:
     runs-on: ubuntu-latest
     environment: build
     container:
-      image: feabhas/ubuntu-projects:latest
+      image: feabhas/mycobot-cpp:latest
       # options: -u 1001
     steps:
     - uses: actions/checkout@v3
