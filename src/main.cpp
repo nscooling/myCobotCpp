@@ -55,7 +55,6 @@ int main(int argc, char *argv[]) {
               << " encoder = " << mc.get_encoder(cobot::Joint::J5) << std::endl;
   };
 
-
   if (not mc.is_controller_connected()) {
     std::cerr << "Robot is not connected\n";
     exit(EXIT_FAILURE);

@@ -51,7 +51,7 @@ public:
   auto is_powered_on() -> bool;
   //     release_all_servos()
   auto is_controller_connected() -> bool;
-  enum class refresh_mode_status {sequential, latest};
+  enum class refresh_mode_status { sequential, latest };
   auto get_fresh_mode() -> refresh_mode_status;
 
   auto start() -> void;

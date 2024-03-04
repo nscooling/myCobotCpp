@@ -36,3 +36,4 @@ build/
 .port_list
 vcpkg_installed
 build-u
+.bash_history

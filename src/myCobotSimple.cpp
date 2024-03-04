@@ -74,13 +74,12 @@ MyCobotSimple::~MyCobotSimple() {
   std::this_thread::sleep_for(std::chrono::seconds(2));
 }
 
-  auto MyCobotSimple::get_fresh_mode() -> refresh_mode_status {
+auto MyCobotSimple::get_fresh_mode() -> refresh_mode_status {
   auto read_buffer = serial->get(command::get_fresh_mode);
   assert(read_buffer.size() == 1);
   return (read_buffer[0] == 0x01) ? refresh_mode_status::latest
                                   : refresh_mode_status::sequential;
 }
-
 
 auto MyCobotSimple::set_color(std::uint8_t r, std::uint8_t g, std::uint8_t b)
     -> void {

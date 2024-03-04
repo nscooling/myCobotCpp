@@ -1,12 +1,33 @@
 #include "myCobot.h"
 
+#include <array>
 #include <cassert>
 #include <cstdint>
 #include <fstream>
 #include <iostream>
+#include <sstream>
 #include <string>
 #include <string_view>
 #include <thread>
+
+namespace {
+
+auto get_port_list(const char *system_call) -> std::string {
+  std::array<char, 128> buffer;
+  std::string result;
+  auto pipe = popen(system_call, "r");
+  if (!pipe) {
+    std::cerr << "popen() failed!";
+    std::exit(1);
+  }
+  while (fgets(buffer.data(), buffer.size(), pipe) != nullptr) {
+    result += buffer.data();
+  }
+  [[maybe_unused]] auto returnCode = pclose(pipe);
+  return result;
+}
+
+} // namespace
 
 namespace cobot {
 
@@ -22,17 +43,14 @@ void cycle_colors(MyCobot &mc, unsigned int num_cycles) {
 }
 
 namespace macos {
+
+constexpr auto sys_call =
+    R"(ioreg -p IOUSB -l -b | grep -E "@|idVendor|idProduct|kUSBSerialNumberString|kUSBAddress")";
+
 auto find_port() -> std::string {
   std::string port;
-  system(
-      R"(ioreg -p IOUSB -l -b | grep -E "@|idVendor|idProduct|kUSBSerialNumberString|kUSBAddress" > .port_list)");
-
-  std::ifstream port_list(".port_list");
-
-  if (!port_list) {
-    std::cerr << "Unable to open fileport_list.\n";
-    std::exit(1);
-  }
+  auto result = get_port_list(sys_call);
+  std::istringstream port_list{result};
   std::string line;
   while (std::getline(port_list, line)) {
     if (std::string_view(line).contains("USB Single Serial")) {
@@ -67,7 +85,6 @@ auto find_port() -> std::string {
       break;
     }
   }
-  port_list.close();
   return port;
 }
 } // namespace macos
