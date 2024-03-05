@@ -29,25 +29,12 @@ auto get_port_list(const char *system_call) -> std::string {
 
 } // namespace
 
-namespace cobot {
-
-void cycle_colors(MyCobot &mc, unsigned int num_cycles) {
-  for (decltype(num_cycles) i{}; i < num_cycles; ++i) {
-    mc.set_color(Red{0xff}, Green{0x00}, Blue{0x00});
-    std::this_thread::sleep_for(std::chrono::seconds(1));
-    mc.set_color(Red{0x00}, Green{0xff}, Blue{0x00});
-    std::this_thread::sleep_for(std::chrono::seconds(1));
-    mc.set_color(Red{0x00}, Green{0x00}, Blue{0xff});
-    std::this_thread::sleep_for(std::chrono::seconds(1));
-  }
-}
-
 namespace macos {
 
 constexpr auto sys_call =
     R"(ioreg -p IOUSB -l -b | grep -E "@|idVendor|idProduct|kUSBSerialNumberString|kUSBAddress")";
 
-auto find_port() -> std::string {
+static auto find_port() -> std::string {
   std::string port;
   auto result = get_port_list(sys_call);
   std::istringstream port_list{result};
@@ -88,6 +75,29 @@ auto find_port() -> std::string {
   return port;
 }
 } // namespace macos
+
+namespace cobot {
+
+void cycle_colors(MyCobot &mc, unsigned int num_cycles) {
+  for (decltype(num_cycles) i{}; i < num_cycles; ++i) {
+    mc.set_color(Red{0xff}, Green{0x00}, Blue{0x00});
+    std::this_thread::sleep_for(std::chrono::seconds(1));
+    mc.set_color(Red{0x00}, Green{0xff}, Blue{0x00});
+    std::this_thread::sleep_for(std::chrono::seconds(1));
+    mc.set_color(Red{0x00}, Green{0x00}, Blue{0xff});
+    std::this_thread::sleep_for(std::chrono::seconds(1));
+  }
+}
+
+auto find_port() -> std::string {
+#ifdef MACOS
+  return macos::find_port();
+#else
+#error "Unsupported platform"
+#endif
+}
+
+} // namespace cobot
 
 /*
 
@@ -190,4 +200,3 @@ received is {}".format(current_min, current_max, value)) elif parameter ==
 exception_class, int)
 
 */
-} // namespace cobot

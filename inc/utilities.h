@@ -22,9 +22,7 @@ template <typename T, std::size_t len> void print_list(std::span<T, len> span) {
 
 void cycle_colors(MyCobot &mc, unsigned int num_cycles = 1);
 
-namespace macos {
 auto find_port() -> std::string;
-}
 
 } // namespace cobot
 

@@ -22,10 +22,19 @@ using cobot::Green;
 using namespace std::chrono_literals;
 using cobot::Red;
 
+[[maybe_unused]] static void test1(std::string_view port);
+
+#include "myCobotComms.h"
+
 int main(int argc, char *argv[]) {
   std::string port;
   if (argc == 1) {
-    port = cobot::macos::find_port();
+    try {
+      port = cobot::find_port();
+    } catch (std::exception &ex) {
+      std::cerr << ex.what() << std::endl;
+      return (-1);
+    }
   } else if (argc == 2) {
     port = argv[1];
   } else if (argc > 2) {
@@ -33,6 +42,30 @@ int main(int argc, char *argv[]) {
     return 1;
   }
 
+  // test1(port);
+}
+
+void test1(std::string_view port) {
+  cobot::MyCobotSimple mc(port);
+
+  if (not mc.is_controller_connected()) {
+    std::cerr << "Robot is not connected\n";
+    exit(EXIT_FAILURE);
+  }
+  std::cout << "Robot is connected\n";
+
+  cobot::Encoders encoders{};
+
+  // mc.set_encoders(encoders);
+  std::this_thread::sleep_for(3s);
+
+  encoders = mc.get_encoders();
+  std::cout << "get_encoders = ";
+  cobot::print_list(std::span{encoders});
+  std::this_thread::sleep_for(3s);
+}
+
+void test2(std::string_view port) {
   // cobot::MyCobot mc(port);
   cobot::MyCobotSimple mc(port);
 

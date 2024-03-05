@@ -26,6 +26,26 @@ include_directories(
    ${PROJECT_SOURCE_DIR}/inc
 )
 
+
+
+# ---- Create executable ----
+
 add_executable(SerialPortProject ${sources})
 
 target_link_libraries(SerialPortProject Boost::system)
+
+if(APPLE)
+  # macOS-specific configuration
+  message(STATUS "Building for macOS")
+  target_compile_definitions(SerialPortProject PRIVATE MACOS)
+else()
+  # Non-macOS configuration
+  message(STATUS "Not building for macOS")
+endif()
+
+# optional testing
+
+if (EXISTS ${CMAKE_SOURCE_DIR}/tests/CMakeLists.txt)
+  enable_testing()
+  add_subdirectory(tests)
+endif()
