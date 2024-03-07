@@ -20,6 +20,7 @@ using cobot::Green;
 #include "myCobotSimple.h"
 #endif
 
+#include "myCobotComms.h"
 #include "utilities.h"
 
 using namespace std::chrono_literals;
@@ -29,8 +30,26 @@ using cobot::Red;
 
 #include "myCobotComms.h"
 
+auto get_written_data(std::string const &pseudo_port) -> std::string {
+  std::string command = "xxd -l 5 -g 1 < " + pseudo_port;
+  auto pipe = popen(command.c_str(), "r");
+  if (!pipe) {
+    std::cerr << "popen() failed!";
+    std::exit(1);
+  }
+  std::cout << "popen() succeeded\n";
+  std::array<char, 128> buffer;
+  // if(fgets(buffer.data(), buffer.size(), pipe) != nullptr) {
+  //   std::cout << buffer.data() << '\n';
+  // }
+  fgets(buffer.data(), buffer.size(), pipe);
+  return buffer.data();
+}
+
 int main(int argc, char *argv[]) {
-  std::string port;
+  std::string port{};
+  std::string pseudo_port{};
+  ;
   if (argc == 1) {
     try {
       port = cobot::find_port();
@@ -40,62 +59,29 @@ int main(int argc, char *argv[]) {
     }
   } else if (argc == 2) {
     port = argv[1];
-  } else if (argc > 2) {
-    std::cerr << "Usage: " << argv[0] << " [<serial port>]\n";
+  } else if (argc == 3) {
+    port = argv[1];
+    pseudo_port = argv[2];
+  } else if (argc > 3) {
+    std::cerr << "Usage: " << argv[0]
+              << " [<serial port>] or [<pseudo serial port>] [<pseudo serial "
+                 "port>]\n";
     return 1;
   }
 
-  // std::thread t1{[] {
-  //     boost::asio::io_service io;
-  //     boost::asio::serial_port port(io, "/dev/ttys013");
-  //     port.set_option(boost::asio::serial_port_base::baud_rate(115200));
-  //     if (!port.is_open()) {
-  //         std::cerr << "Cannot open port\n";
-  //         return;
-  //     }
-  //     std::cout << "Port is open\n";
-
-  //     char byte;
-  //     boost::asio::read(port, boost::asio::buffer(&byte, 1));
-  //     while (port.is_open()) {
-  //         std::cout << std::hex << static_cast<int>(byte) << ' ';
-  //         boost::asio::read(port, boost::asio::buffer(&byte, 1));
-  //     }
-  // }};
-
-  // std::thread t1{[]{
-  //   std::ifstream file("/dev/ttys013", std::ios::binary);
-  //   if (!file) {
-  //     std::cerr << "Cannot open file\n";
-  //     return;
-  //   }
-  //   std::cout << "/dev/ttys013 open for reading\n";
-  //   char buffer[80];
-  //   file.read((char*)buffer, 4);
-  //   std::cout << "read " << file.gcount() << " bytes\n";
-  //   file.close();
-  // }};
-
   {
-    std::ofstream file("/dev/ttys013", std::ios::binary);
+    std::ofstream file(pseudo_port, std::ios::binary);
     if (!file) {
       std::cerr << "Cannot open file\n";
       return -1;
     }
-    std::cout << "/dev/ttys013 open for writing\n";
-
-    std::uint8_t data[] = {cobot::frame_identity,
-                           cobot::frame_identity,
-                           3,
-                           cobot::command::is_controller_connected,
-                           1,
-                           cobot::end_frame};
-    // std::uint8_t data[] = { cobot::frame_identity, cobot::frame_identity, 3,
-    // cobot::command::is_controller_connected, 0, cobot::end_frame };
-    file.write((const char *)data, sizeof(data));
-
+    std::cout << pseudo_port << " open for writing\n";
+    auto packet =
+        cobot::make_frame(cobot::command::is_controller_connected, true);
+    file.write((const char *)packet.data(), sizeof(packet));
     file.close();
   }
+
   std::this_thread::sleep_for(500ms);
   std::cout << "connecting to cobot\n";
 
@@ -105,11 +91,14 @@ int main(int argc, char *argv[]) {
     exit(EXIT_FAILURE);
   }
   std::cout << "Robot is connected\n";
-  // test1(port);
-  // t1.join();
+
+  auto data = get_written_data(pseudo_port);
+  std::cout << "data = " << data << '\n';
 }
 
-void test1(std::string_view port) {
+////////////////////////////////////////////////////////////
+
+[[maybe_unused]] static void test1(std::string_view port) {
   cobot::MyCobotSimple mc(port);
 
   if (not mc.is_controller_connected()) {
