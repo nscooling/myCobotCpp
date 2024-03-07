@@ -1,7 +1,10 @@
 #include <array>
 #include <cstdint>
+#include <fstream>
 #include <iostream>
 #include <thread>
+// #include <print>
+#include <fstream>
 
 #include <utility>
 // The appears to be a bug In the Ubuntu/GCC version of the boost library
@@ -42,7 +45,68 @@ int main(int argc, char *argv[]) {
     return 1;
   }
 
+  // std::thread t1{[] {
+  //     boost::asio::io_service io;
+  //     boost::asio::serial_port port(io, "/dev/ttys013");
+  //     port.set_option(boost::asio::serial_port_base::baud_rate(115200));
+  //     if (!port.is_open()) {
+  //         std::cerr << "Cannot open port\n";
+  //         return;
+  //     }
+  //     std::cout << "Port is open\n";
+
+  //     char byte;
+  //     boost::asio::read(port, boost::asio::buffer(&byte, 1));
+  //     while (port.is_open()) {
+  //         std::cout << std::hex << static_cast<int>(byte) << ' ';
+  //         boost::asio::read(port, boost::asio::buffer(&byte, 1));
+  //     }
+  // }};
+
+  // std::thread t1{[]{
+  //   std::ifstream file("/dev/ttys013", std::ios::binary);
+  //   if (!file) {
+  //     std::cerr << "Cannot open file\n";
+  //     return;
+  //   }
+  //   std::cout << "/dev/ttys013 open for reading\n";
+  //   char buffer[80];
+  //   file.read((char*)buffer, 4);
+  //   std::cout << "read " << file.gcount() << " bytes\n";
+  //   file.close();
+  // }};
+
+  {
+    std::ofstream file("/dev/ttys013", std::ios::binary);
+    if (!file) {
+      std::cerr << "Cannot open file\n";
+      return -1;
+    }
+    std::cout << "/dev/ttys013 open for writing\n";
+
+    std::uint8_t data[] = {cobot::frame_identity,
+                           cobot::frame_identity,
+                           3,
+                           cobot::command::is_controller_connected,
+                           1,
+                           cobot::end_frame};
+    // std::uint8_t data[] = { cobot::frame_identity, cobot::frame_identity, 3,
+    // cobot::command::is_controller_connected, 0, cobot::end_frame };
+    file.write((const char *)data, sizeof(data));
+
+    file.close();
+  }
+  std::this_thread::sleep_for(500ms);
+  std::cout << "connecting to cobot\n";
+
+  cobot::MyCobotSimple mc(port);
+  if (not mc.is_controller_connected()) {
+    std::cerr << "Robot is not connected\n";
+    exit(EXIT_FAILURE);
+  }
+  std::cout << "Robot is connected\n";
   // test1(port);
+  // t1.join();
 }
 
 void test1(std::string_view port) {

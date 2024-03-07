@@ -33,12 +33,14 @@ include(GoogleTest)
 
 # add_compile_options(--coverage)
 
-include_directories(${DOCTEST_INCLUDE_DIR})
+# include_directories(${DOCTEST_INCLUDE_DIR})
+
 include_directories(
     ${CMAKE_SOURCE_DIR}/src
     ${CMAKE_SOURCE_DIR}/inc
 )
 
+set(USER_SRC ${CMAKE_SOURCE_DIR}/src/utilities.cpp ${CMAKE_SOURCE_DIR}/src/myCobotSimple.cpp ${CMAKE_SOURCE_DIR}/src/myCobotComms.cpp)
 
 ################################################################
 
@@ -47,17 +49,14 @@ include_directories(
 
 ################################################################
 
-# add_executable(tests test_myCobot.cpp ${CMAKE_SOURCE_DIR}/src/GPIO.cpp)
-add_executable(tests test_myCobot.cpp)
-
-add_test(NAME all_tests COMMAND tests)
-# add_test(NAME all_tests COMMAND ${CMAKE_CROSSCOMPILING_EMULATOR} $<TARGET_FILE:tests> --nographic)
-
+add_executable(tests test_myCobot.cpp test_main.cpp ${USER_SRC} )
 
 ################################################################
 
 # target_link_libraries(tests PRIVATE --coverage GTest::gtest_main pthread)
-target_link_libraries(tests GTest::gtest_main pthread)
+# target_link_libraries(tests GTest::gtest_main pthread)
+target_link_libraries(tests GTest::gtest pthread Boost::system)
+target_compile_definitions(tests PRIVATE ${PLATFORM})
 
 
 ################################################################

@@ -1,5 +1,5 @@
 cmake_minimum_required(VERSION 3.22)
-project(SerialPortProject)
+project(myCobotSimple_Serial)
 
 set(CMAKE_CXX_STANDARD 23)
 set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
@@ -34,18 +34,21 @@ include_directories(
 
 # ---- Create executable ----
 
-add_executable(SerialPortProject ${sources})
+add_executable(myCobotSimple-Serial ${sources})
 
-target_link_libraries(SerialPortProject Boost::system)
+target_link_libraries(myCobotSimple-Serial Boost::system)
 
 if(APPLE)
   # macOS-specific configuration
   message(STATUS "Building for macOS")
-  target_compile_definitions(SerialPortProject PRIVATE MACOS)
+  set(PLATFORM MACOS)
 else()
   # Non-macOS configuration
   message(STATUS "Not building for macOS")
 endif()
+
+target_compile_definitions(myCobotSimple-Serial PRIVATE ${PLATFORM})
+# target_compile_definitions(myCobotSimple-Serial PRIVATE MACOS)
 
 # optional testing
 

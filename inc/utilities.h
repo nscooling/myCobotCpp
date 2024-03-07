@@ -20,7 +20,7 @@ template <typename T, std::size_t len> void print_list(std::span<T, len> span) {
   std::cout << " ]" << std::endl;
 }
 
-void cycle_colors(MyCobot &mc, unsigned int num_cycles = 1);
+// void cycle_colors(MyCobot &mc, unsigned int num_cycles = 1);
 
 auto find_port() -> std::string;
 

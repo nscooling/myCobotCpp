@@ -42,11 +42,6 @@ private:
         sizeof...(Ts) + 2; // 2 => cmd and end_frame
     constexpr std::size_t packet_size =
         frame_size + 3; // 3 => frame_identity, frame_identity, frame_size
-
-    // std::array<std::uint8_t, packet_size> frame = {
-    //     frame_identity,    frame_identity,        frame_size,
-    //     std::uint8_t(cmd), std::uint8_t(args)..., end_frame};
-    // return frame;
     return std::array<std::uint8_t, packet_size>{
         frame_identity,    frame_identity,        frame_size,
         std::uint8_t(cmd), std::uint8_t(args)..., end_frame};

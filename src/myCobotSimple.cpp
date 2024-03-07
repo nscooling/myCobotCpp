@@ -68,11 +68,12 @@ namespace cobot {
 MyCobotSimple::MyCobotSimple(std::string_view port)
     : serial{std::make_shared<Comms>(port)} {}
 
-MyCobotSimple::~MyCobotSimple() {
-  stop();
-  set_color(0x00, 0x00, 0x00);
-  std::this_thread::sleep_for(std::chrono::seconds(2));
-}
+// MyCobotSimple::~MyCobotSimple() {
+//   stop();
+//   set_color(0x00, 0x00, 0x00);
+//   std::this_thread::sleep_for(std::chrono::seconds(2));
+// }
+MyCobotSimple::~MyCobotSimple() = default;
 
 auto MyCobotSimple::get_fresh_mode() -> refresh_mode_status {
   auto read_buffer = serial->get(command::get_fresh_mode);
@@ -163,9 +164,6 @@ auto MyCobotSimple::get_coords() -> Coords {
 auto MyCobotSimple::get_basic_version() -> std::string {
   auto read_buffer = serial->get(command::get_basic_version);
   assert(read_buffer.size() == 1);
-  // std::ostringstream stream;
-  // stream << read_buffer[0] / 10.0f;
-  // return stream.str();
   std::array<char, 10> str;
   if (auto [ptr, ec] = std::to_chars(str.data(), str.data() + str.size(),
                                      read_buffer[0] / 10.0f);
