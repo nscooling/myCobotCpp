@@ -30,8 +30,8 @@ using cobot::Red;
 
 #include "myCobotComms.h"
 
-auto get_written_data(std::string const &pseudo_port) -> std::string {
-  std::string command = "xxd -l 5 -g 1 < " + pseudo_port;
+auto get_written_data(std::string const &pseudo_port, unsigned num) -> std::string {
+  std::string command = "xxd -l " + std::to_string(num) + " -g 1 < " + pseudo_port;
   auto pipe = popen(command.c_str(), "r");
   if (!pipe) {
     std::cerr << "popen() failed!";
@@ -72,13 +72,15 @@ int main(int argc, char *argv[]) {
   {
     std::ofstream file(pseudo_port, std::ios::binary);
     if (!file) {
-      std::cerr << "Cannot open file\n";
+      std::cerr << "Cannot open file " << pseudo_port << '\n';
       return -1;
     }
     std::cout << pseudo_port << " open for writing\n";
     auto packet =
         cobot::make_frame(cobot::command::is_controller_connected, true);
-    file.write((const char *)packet.data(), sizeof(packet));
+    cobot::print_byte_list(std::cout, std::span{packet}
+    );
+    file.write(reinterpret_cast<const char*>(packet.data()), sizeof(packet));
     file.close();
   }
 
@@ -92,7 +94,7 @@ int main(int argc, char *argv[]) {
   }
   std::cout << "Robot is connected\n";
 
-  auto data = get_written_data(pseudo_port);
+  auto data = get_written_data(pseudo_port, 5);
   std::cout << "data = " << data << '\n';
 }
 
