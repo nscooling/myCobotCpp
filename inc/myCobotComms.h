@@ -27,7 +27,6 @@ template <typename... Ts> constexpr auto make_frame(command cmd, Ts... args) {
       std::uint8_t(cmd), std::uint8_t(args)..., end_frame};
 }
 
-
 class Comms {
 public:
   explicit Comms(std::string_view port);

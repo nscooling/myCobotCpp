@@ -7,7 +7,6 @@ Comms::Comms(std::string_view port) : serial{io, std::string{port}} {
   serial.set_option(boost::asio::serial_port_base::baud_rate(115200));
 }
 
-
 auto Comms::read_(boost::asio::serial_port &serial) -> std::vector<uint8_t> {
   std::array<uint8_t, 4> header{};
   boost::asio::read(serial, boost::asio::buffer(header));

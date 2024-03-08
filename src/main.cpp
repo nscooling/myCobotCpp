@@ -30,20 +30,36 @@ using cobot::Red;
 
 #include "myCobotComms.h"
 
-auto get_written_data(std::string const &pseudo_port, unsigned num) -> std::string {
-  std::string command = "xxd -l " + std::to_string(num) + " -g 1 < " + pseudo_port;
+auto get_written_data(std::string const &pseudo_port, unsigned num)
+    -> std::string {
+  std::string command =
+      "xxd -l " + std::to_string(num) + " -g 1 < " + pseudo_port;
   auto pipe = popen(command.c_str(), "r");
   if (!pipe) {
     std::cerr << "popen() failed!";
     std::exit(1);
   }
-  std::cout << "popen() succeeded\n";
+  // std::cout << "popen() succeeded\n";
   std::array<char, 128> buffer;
   // if(fgets(buffer.data(), buffer.size(), pipe) != nullptr) {
   //   std::cout << buffer.data() << '\n';
   // }
   fgets(buffer.data(), buffer.size(), pipe);
   return buffer.data();
+}
+
+template <std::size_t N>
+void send_to_cobot(std::string const &pseudo_port,
+                   std::array<std::uint8_t, N> const &packet) {
+  std::ofstream file(pseudo_port, std::ios::binary);
+  if (!file) {
+    std::cerr << "Cannot open file " << pseudo_port << '\n';
+    std::exit(1);;
+  }
+  std::cout << pseudo_port << " open; writing packet: ";
+  cobot::print_byte_list(std::cout, std::span{packet});
+  file.write(reinterpret_cast<const char *>(packet.data()), sizeof(packet));
+  file.close();
 }
 
 int main(int argc, char *argv[]) {
@@ -70,18 +86,19 @@ int main(int argc, char *argv[]) {
   }
 
   {
-    std::ofstream file(pseudo_port, std::ios::binary);
-    if (!file) {
-      std::cerr << "Cannot open file " << pseudo_port << '\n';
-      return -1;
-    }
-    std::cout << pseudo_port << " open for writing\n";
+    // std::ofstream file(pseudo_port, std::ios::binary);
+    // if (!file) {
+    //   std::cerr << "Cannot open file " << pseudo_port << '\n';
+    //   return -1;
+    // }
+    // std::cout << pseudo_port << " open for writing\n";
     auto packet =
         cobot::make_frame(cobot::command::is_controller_connected, true);
-    cobot::print_byte_list(std::cout, std::span{packet}
-    );
-    file.write(reinterpret_cast<const char*>(packet.data()), sizeof(packet));
-    file.close();
+    send_to_cobot(pseudo_port, packet);
+    // cobot::print_byte_list(std::cout, std::span{packet}
+    // );
+    // file.write(reinterpret_cast<const char*>(packet.data()), sizeof(packet));
+    // file.close();
   }
 
   std::this_thread::sleep_for(500ms);

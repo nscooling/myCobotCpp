@@ -33,7 +33,6 @@ void print_byte_list(std::ostream &os, std::span<T, len> span, char cr = '\n') {
   os << std::dec << " ]" << cr;
 }
 
-
 // void cycle_colors(MyCobot &mc, unsigned int num_cycles = 1);
 
 auto find_port() -> std::string;
