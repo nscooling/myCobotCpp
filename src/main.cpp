@@ -22,6 +22,15 @@ using cobot::Green;
 using namespace std::chrono_literals;
 using cobot::Red;
 
+#if 0
+
+int main() {
+  auto port = cobot::macos::find_port();
+  std::cout << port << std::endl;
+
+}
+
+#else
 int main(int argc, char *argv[]) {
   std::string port;
   if (argc == 1) {
@@ -161,3 +170,5 @@ int main(int argc, char *argv[]) {
 
   std::this_thread::sleep_for(1s);
 }
+
+#endif
