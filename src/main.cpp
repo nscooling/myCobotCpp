@@ -65,7 +65,6 @@ void send_to_cobot(std::string const &pseudo_port,
 int main(int argc, char *argv[]) {
   std::string port{};
   std::string pseudo_port{};
-  ;
   if (argc == 1) {
     try {
       port = cobot::find_port();
@@ -137,7 +136,7 @@ int main(int argc, char *argv[]) {
   std::this_thread::sleep_for(3s);
 }
 
-void test2(std::string_view port) {
+[[maybe_unused]] static void test2(std::string_view port) {
   // cobot::MyCobot mc(port);
   cobot::MyCobotSimple mc(port);
 
