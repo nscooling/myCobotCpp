@@ -28,4 +28,4 @@ include_directories(
 
 add_executable(SerialPortProject ${sources})
 
-target_link_libraries(SerialPortProject Boost::system)
+target_link_libraries(SerialPortProject Boost::system pthread)
