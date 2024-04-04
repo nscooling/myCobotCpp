@@ -4,7 +4,7 @@
 #include <iostream>
 #include <thread>
 // #include <print>
-#include <fstream>
+// #include <fstream>
 
 #include <utility>
 // The appears to be a bug In the Ubuntu/GCC version of the boost library
@@ -26,6 +26,7 @@ using cobot::Green;
 #endif
 
 #include "myCobotComms.h"
+#include "pseudo_port_test.h"
 #include "utilities.h"
 
 using namespace std::chrono_literals;
@@ -33,41 +34,9 @@ using cobot::Red;
 
 ////////////////////////////////////////////////////////////////////////////////
 
-[[maybe_unused]] static int status_tests(cobot::MyCobotSimple &mc);
 [[maybe_unused]] static int all_joint_test(cobot::MyCobotSimple &mc);
 
-[[maybe_unused]] static void test1(std::string_view port);
-
 #include "myCobotComms.h"
-
-auto get_written_data(std::string const &pseudo_port, unsigned num)
-    -> std::string {
-  std::string command =
-      "xxd -l " + std::to_string(num) + " -g 1 < " + pseudo_port;
-  auto pipe = popen(command.c_str(), "r");
-  if (!pipe) {
-    std::cerr << "popen() failed!";
-    std::exit(1);
-  }
-  std::array<char, 128> buffer;
-  fgets(buffer.data(), buffer.size(), pipe);
-  return buffer.data();
-}
-
-template <std::size_t N>
-void send_to_cobot(std::string const &pseudo_port,
-                   std::array<std::uint8_t, N> const &packet) {
-  std::ofstream file(pseudo_port, std::ios::binary);
-  if (!file) {
-    std::cerr << "Cannot open file " << pseudo_port << '\n';
-    std::exit(1);
-    ;
-  }
-  std::cout << pseudo_port << " open; writing packet: ";
-  cobot::print_byte_list(std::cout, std::span{packet});
-  file.write(reinterpret_cast<const char *>(packet.data()), sizeof(packet));
-  file.close();
-}
 
 ////////////////////////////////////////////////////////////////////////////////
 //
@@ -95,79 +64,20 @@ int main(int argc, char *argv[]) {
     return 1;
   }
 
-  {
-    auto packet =
-        cobot::make_frame(cobot::command::is_controller_connected, true);
-    send_to_cobot(pseudo_port, packet);
-  }
+  if (pseudo_port.empty()) {
+    std::this_thread::sleep_for(500ms);
+    std::cout << "connecting to cobot\n";
 
-  std::this_thread::sleep_for(500ms);
-  std::cout << "connecting to cobot\n";
-
-  cobot::MyCobotSimple mc(port);
-  if (not mc.is_controller_connected()) {
-    std::cerr << "Robot is not connected\n";
-    exit(EXIT_FAILURE);
-  }
-  std::cout << "Robot is connected\n";
-
-  auto data = get_written_data(pseudo_port, 5);
-  std::cout << "data = " << data << '\n';
-}
-
-////////////////////////////////////////////////////////////
-
-[[maybe_unused]] static void test1(std::string_view port) {
-  cobot::MyCobotSimple mc(port);
-
-  if (not mc.is_controller_connected()) {
-    std::cerr << "Robot is not connected\n";
-    exit(EXIT_FAILURE);
-  }
-  std::cout << "Robot is connected\n";
-
-  cobot::Encoders encoders{};
-
-  // mc.set_encoders(encoders);
-  std::this_thread::sleep_for(3s);
-
-  encoders = mc.get_encoders();
-  std::cout << "get_encoders = ";
-  cobot::print_list(std::span{encoders});
-  std::this_thread::sleep_for(3s);
-}
-
-[[maybe_unused]] static void test2(std::string_view port) {
-  // cobot::MyCobot mc(port);
-  cobot::MyCobotSimple mc(port);
-  // main code
-  if (not mc.is_controller_connected()) {
-    std::cerr << "Robot is not connected\n";
-    exit(EXIT_FAILURE);
-  }
-  std::cout << "Robot is connected\n";
-
-  status_tests(mc);
-  all_joint_test(mc);
-}
-
-////////////////////////////////////////////////////////////////////////////////
-//
-// Basic Status Tests
-//
-int status_tests(cobot::MyCobotSimple &mc) {
-  if (mc.is_powered_on()) {
-    std::cout << "Atom is powered on\n";
+    cobot::MyCobotSimple mc(port);
+    if (not mc.is_controller_connected()) {
+      std::cerr << "Robot is not connected\n";
+      exit(EXIT_FAILURE);
+    }
+    std::cout << "Robot is connected\n";
+    all_joint_test(mc);
   } else {
-    std::cout << "Atom is powered off\n";
+    pseduo_port_test(port, pseudo_port);
   }
-
-  auto version = mc.get_basic_version();
-  std::cout << "get_basic_version = " << version << std::endl;
-
-  auto refresh_mode = mc.get_refresh_mode();
-  std::cout << "get_refresh_mode = " << static_cast<int>(refresh_mode) << std::endl;
-
   return 0;
 }
 
@@ -234,4 +144,3 @@ int all_joint_test(cobot::MyCobotSimple &mc) {
   std::this_thread::sleep_for(3s);
   return 0;
 }
-

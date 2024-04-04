@@ -68,11 +68,6 @@ namespace cobot {
 MyCobotSimple::MyCobotSimple(std::string_view port)
     : serial{std::make_shared<Comms>(port)} {}
 
-// MyCobotSimple::~MyCobotSimple() {
-//   stop();
-//   set_color(0x00, 0x00, 0x00);
-//   std::this_thread::sleep_for(std::chrono::seconds(2));
-// }
 MyCobotSimple::~MyCobotSimple() = default;
 
 auto MyCobotSimple::get_refresh_mode() -> refresh_mode_status {
