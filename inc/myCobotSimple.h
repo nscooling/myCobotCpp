@@ -52,7 +52,7 @@ public:
   //     release_all_servos()
   auto is_controller_connected() -> bool;
   enum class refresh_mode_status { sequential, latest };
-  auto get_fresh_mode() -> refresh_mode_status;
+  auto get_refresh_mode() -> refresh_mode_status;
 
   auto start() -> void;
   auto stop() -> void;

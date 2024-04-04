@@ -75,8 +75,8 @@ MyCobotSimple::MyCobotSimple(std::string_view port)
 // }
 MyCobotSimple::~MyCobotSimple() = default;
 
-auto MyCobotSimple::get_fresh_mode() -> refresh_mode_status {
-  auto read_buffer = serial->get(command::get_fresh_mode);
+auto MyCobotSimple::get_refresh_mode() -> refresh_mode_status {
+  auto read_buffer = serial->get(command::get_refresh_mode);
   assert(read_buffer.size() == 1);
   return (read_buffer[0] == 0x01) ? refresh_mode_status::latest
                                   : refresh_mode_status::sequential;

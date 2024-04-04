@@ -8,10 +8,10 @@ namespace { // use an unnamed namespace to ensure internal linkage.
 
 class myCobotTests : public ::testing::Test {
 protected:
-  myCobotTests() : mc(port) {}
+  myCobotTests() = default;
   ~myCobotTests() override = default;
   // Objects declared here can be used by all tests in the test case
-  cobot::MyCobotSimple mc;
+  cobot::MyCobotSimple mc{port};
 };
 
 } // namespace
@@ -23,4 +23,13 @@ TEST_F(myCobotTests, robotConnected) {
 TEST_F(myCobotTests, robotVersion) {
   auto version = mc.get_basic_version();
   ASSERT_EQ(version, "2.4");
+}
+
+TEST_F(myCobotTests, robotRefreshMode) {
+  auto refresh_mode = mc.get_refresh_mode();
+  ASSERT_EQ(static_cast<int>(refresh_mode), int(cobot::MyCobotSimple::refresh_mode_status::latest));
+}
+
+TEST_F(myCobotTests, robotPowerStatus) {
+  ASSERT_TRUE(mc.is_powered_on());
 }

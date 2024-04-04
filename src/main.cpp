@@ -165,8 +165,8 @@ int status_tests(cobot::MyCobotSimple &mc) {
   auto version = mc.get_basic_version();
   std::cout << "get_basic_version = " << version << std::endl;
 
-  auto fresh_mode = mc.get_fresh_mode();
-  std::cout << "get_fresh_mode = " << static_cast<int>(fresh_mode) << std::endl;
+  auto refresh_mode = mc.get_refresh_mode();
+  std::cout << "get_refresh_mode = " << static_cast<int>(refresh_mode) << std::endl;
 
   return 0;
 }
