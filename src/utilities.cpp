@@ -1,3 +1,5 @@
+#include "utilities.h"
+#include "linux_utilities.h"
 #include "myCobot.h"
 
 #include <array>
@@ -101,6 +103,8 @@ namespace cobot {
 auto find_port() -> std::string {
 #ifdef MACOS
   return macos::find_port();
+#elif LINUX
+  return ubuntu::find_port();
 #else
 #error "Unsupported platform"
 #endif

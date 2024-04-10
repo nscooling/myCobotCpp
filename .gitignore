@@ -34,6 +34,7 @@ build/
 
 # Debug files
 .port_list
+.cache/
 vcpkg_installed
 build-u
 .bash_history
