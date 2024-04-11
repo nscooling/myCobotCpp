@@ -49,17 +49,20 @@ set(USER_SRC ${CMAKE_SOURCE_DIR}/src/utilities.cpp ${CMAKE_SOURCE_DIR}/src/linux
 
 ################################################################
 
-add_executable(tests test_myCobot.cpp test_main.cpp ${USER_SRC} )
+add_executable(cobot_tests test_myCobot.cpp test_main.cpp ${USER_SRC} )
 
 ################################################################
 
 # target_link_libraries(tests PRIVATE --coverage GTest::gtest_main pthread)
 # target_link_libraries(tests GTest::gtest_main pthread)
-target_link_libraries(tests GTest::gtest pthread Boost::system)
-target_compile_definitions(tests PRIVATE ${PLATFORM})
+target_link_libraries(cobot_tests GTest::gtest pthread Boost::system)
+target_compile_definitions(cobot_tests PRIVATE ${PLATFORM})
 
 
 ################################################################
 
 # doctest_discover_tests(tests)
-gtest_discover_tests(tests)
+gtest_discover_tests(cobot_tests)
+# add_test(NAME test1 COMMAND cobot_tests
+#     WORKING_DIRECTORY ${CMAKE_SOURCE_DIR}/build
+# ) 

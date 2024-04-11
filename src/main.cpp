@@ -116,7 +116,7 @@ int all_joint_test(cobot::MyCobotSimple &mc) {
     print_joint(joint);
     print_all();
 
-    std::cout << "setting J6 to 0.0f\n";
+    std::cout << "setting J" << static_cast<int>(joint) << " to 0.0f\n";
     mc.send_angle(joint, 0.0f, 50);
     std::this_thread::sleep_for(3s);
     print_joint(joint);
