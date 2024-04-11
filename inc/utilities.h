@@ -1,6 +1,7 @@
 #ifndef _UTILITIES_H_
 #define _UTILITIES_H_
 
+#include <cstdint>
 #include <iostream>
 #include <span>
 
@@ -8,8 +9,7 @@ namespace cobot {
 
 auto find_port() -> std::string;
 
-
-template <typename T, std::size_t len> 
+template <typename T, std::size_t len>
 void print_list(std::ostream &os, std::span<T, len> span) {
   os << "[ ";
   // for (auto a : span) {

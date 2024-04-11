@@ -5,7 +5,6 @@
 
 namespace cobot::macos {
 auto find_port() -> std::string;
-} // namespace macos
-
+} // namespace cobot::macos
 
 #endif // _MACOS_UTILITIES_H_
