@@ -38,21 +38,22 @@ add_executable(myCobotSimple-Serial ${sources})
 
 target_link_libraries(myCobotSimple-Serial Boost::system)
 
-if(APPLE)
-  # macOS-specific configuration
-  message(STATUS "Building for macOS")
-  set(PLATFORM MACOS)
-elseif(LINUX)
-  # Linux-specific configuration
-  message(STATUS "Building for Linux")
-  set(PLATFORM LINUX)
-else()
-  # Non-macOS configuration
-  message(STATUS "Not building for macOS/Linux")
+# ---- Create library ----
+
+if(${CMAKE_SYSTEM_NAME} STREQUAL "Linux")
+    message("Building for Linuxd")
+    # Linux specific code
+    set(PLATFORM LINUX)
+elseif(${CMAKE_SYSTEM_NAME} STREQUAL "Darwin")
+    message("Building for macOS")
+    # macOS specific code
+    set(PLATFORM MACOS)
+elseif(${CMAKE_SYSTEM_NAME} STREQUAL "Windows")
+    message("Windows detected")
+    # Windows specific code
 endif()
 
 target_compile_definitions(myCobotSimple-Serial PRIVATE ${PLATFORM})
-# target_compile_definitions(myCobotSimple-Serial PRIVATE MACOS)
 
 # optional testing
 
