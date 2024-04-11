@@ -124,12 +124,21 @@ int all_joint_test(cobot::MyCobotSimple &mc) {
   };
 
   mc.set_color(cobot::Green);
-  print_all();
+  // print_all();
 
   constexpr cobot::Angles home{0.0f, 0.0f, 0.0f, 0.0f, 0.0f};
   std::cout << "setting all to 0.0f\n";
   mc.send_angles(home, 50);
   std::this_thread::sleep_for(1s);
+  print_all();
+
+  mc.set_encoder(cobot::Joint::J6, 2048);
+  mc.set_encoder(cobot::Joint::J5, 2048);
+  mc.set_encoder(cobot::Joint::J4, 2048);
+  mc.set_encoder(cobot::Joint::J3, 2048);
+  mc.set_encoder(cobot::Joint::J2, 2048);
+  mc.set_encoder(cobot::Joint::J1, 2048);
+  std::this_thread::sleep_for(2s);
   print_all();
 
   move_by_90(cobot::Joint::J6, 90.0f);
@@ -139,8 +148,26 @@ int all_joint_test(cobot::MyCobotSimple &mc) {
   move_by_90(cobot::Joint::J2, 90.0f);
   move_by_90(cobot::Joint::J1, 90.0f);
 
+  //  mc.set_encoder(cobot::Joint::J5, 1031);
+  // std::this_thread::sleep_for(2s);
+  //   print_all();
+
+  // mc.set_encoder(cobot::Joint::J6, 2048);
+  // std::this_thread::sleep_for(2s);
+  //   print_all();
+
   mc.set_color(cobot::Black);
   mc.send_angles(home, 50); // mc.set_color(0, 0, 0);
   std::this_thread::sleep_for(3s);
+  {
+    mc.release_all_servos();
+    std::this_thread::sleep_for(1s);
+  }
+  if (mc.is_servo_enabled(cobot::Joint::J6))
+    std::cout << "J6 Servo is enabled\n";
+  if (mc.is_servo_enabled(cobot::Joint::J5))
+    std::cout << "J5 Servo is enabled\n";
+
+  std::this_thread::sleep_for(1s);
   return 0;
 }

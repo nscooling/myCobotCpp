@@ -2,10 +2,12 @@
 
 #include <charconv>
 #include <cstdint>
+#include <iostream>
 #include <ranges>
 #include <span>
 
 #include "myCobotComms.h"
+#include "utilities.h"
 
 // namespace ranges = std::ranges;
 // namespace views = std::views;
@@ -195,6 +197,30 @@ auto MyCobotSimple::get_encoder(Joint joint) -> std::uint16_t {
   auto read_buffer = serial->get(command::get_encoder, joint);
   assert(read_buffer.size() == 2);
   return from_u8<std::uint16_t>(read_buffer[0], read_buffer[1]);
+}
+
+auto MyCobotSimple::release_all_servos() -> void {
+  serial->write(command::release_all_servos);
+}
+
+auto MyCobotSimple::is_servo_enabled(Joint joint) -> bool {
+  auto read_buffer = serial->get(command::is_servo_enable, joint);
+  // cobot::print_byte_list(std::cout, std::span{read_buffer});
+  assert(read_buffer.size() == 2);
+  assert(read_buffer[0] == std::uint8_t(joint));
+  constexpr std::uint8_t servo_enabled = 0x01;
+  return (read_buffer[1] == servo_enabled);
+}
+
+auto MyCobotSimple::is_all_servo_enable() -> bool {
+  auto read_buffer = serial->get(command::is_all_servo_enable);
+  assert(read_buffer.size() == 1);
+  return (read_buffer[0] == 0x01);
+}
+
+auto MyCobotSimple::set_encoder(Joint joint, std::uint16_t encoder) -> void {
+  auto [high_byte, low_byte] = to_u8(encoder);
+  serial->write(command::set_encoder, std::uint8_t(joint), high_byte, low_byte);
 }
 
 } // namespace cobot

@@ -81,7 +81,8 @@ auto find_port() -> std::string {
 
       // if (idProduct == 21972 && idVendor == 6790) - decimal
       if (idProduct == 0x55d4 && idVendor == 0x1a86) {
-        port = R"(/dev/cu.usbserial-)" + kUSBSerialNumberString + std::to_string(kUSBAddress);
+        port = R"(/dev/cu.usbserial-)" + kUSBSerialNumberString +
+               std::to_string(kUSBAddress);
         break;
       }
     }

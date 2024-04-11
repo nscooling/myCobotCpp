@@ -49,7 +49,7 @@ public:
   //     power_on()
   //     power_off()
   auto is_powered_on() -> bool;
-  //     release_all_servos()
+  auto release_all_servos() -> void;
   auto is_controller_connected() -> bool;
   enum class refresh_mode_status { sequential, latest };
   auto get_refresh_mode() -> refresh_mode_status;
@@ -108,18 +108,42 @@ public:
   //     0 ~ 4096
   auto get_encoder(Joint joint) -> std::uint16_t;
 
-  //     set_encoder()
+  // Function: Set a single joint to rotate to a specified potential vaule 
+  // Parameter Specification: Joint Number = joint, range from 1-6 Potential
+  // Vaule of Servo Motor = encoder, range from 0-4096 ( The range should be
+  // positively related to the range of each joint )
+  auto set_encoder(Joint joint, std::uint16_t encoder) -> void;
+
   //     get_encoders()
   auto get_encoders() -> Encoders;
+
+  //  Function: Set the six joints to run synchronously to the specified
+  // position
+  // Parameter Specification:
+  // Need to define a variableof type Angles: angleEncoders, it is used in the
+  // same way as arrays. Assign a value to the array angleEncoders, values range
+  // from 0 to 4096 ( The range should be positively related to the range of
+  // each joint )  , the length range of the array is 6. Specified Speed =
+  // speed, range from 0~100unit %
   //     set_encoders()
+
   //     get_speed()
   //     set_speed() *
   //     get_joint_min_angle()
   //     get_joint_max_angle()
 
   // # Servo control
-  //     is_servo_enable()
-  //     is_all_servo_enable()
+
+  // Function: Check whether the joint is properly connected
+  // Parameter Specification: Joint Number = joint, range from 1-6
+  // Return Value: Normal links return TRUE, on the contrary return FALSE
+  auto is_servo_enabled(Joint joint) -> bool;
+
+  // isAllServoEnabled();
+  //  Function: Check whether all joins are properly connected
+  //  Return Value: Normal links return TRUE, on the contrary return FALSE
+  auto is_all_servo_enable() -> bool;
+
   //     set_servo_data()
   //     get_servo_data()
   //     set_servo_calibration()
