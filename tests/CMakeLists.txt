@@ -40,7 +40,7 @@ include_directories(
     ${CMAKE_SOURCE_DIR}/inc
 )
 
-set(USER_SRC ${CMAKE_SOURCE_DIR}/src/utilities.cpp ${CMAKE_SOURCE_DIR}/src/linux_utilities.cpp ${CMAKE_SOURCE_DIR}/src/myCobotSimple.cpp ${CMAKE_SOURCE_DIR}/src/myCobotComms.cpp)
+set(USER_SRC ${CMAKE_SOURCE_DIR}/src/utilities.cpp ${CMAKE_SOURCE_DIR}/src/linux_utilities.cpp  ${CMAKE_SOURCE_DIR}/src/macos_utilities.cpp ${CMAKE_SOURCE_DIR}/src/myCobotSimple.cpp ${CMAKE_SOURCE_DIR}/src/myCobotComms.cpp)
 
 ################################################################
 

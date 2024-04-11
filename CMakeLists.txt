@@ -57,10 +57,15 @@ target_compile_definitions(myCobotSimple-Serial PRIVATE ${PLATFORM})
 
 # optional testing
 
-if (EXISTS ${CMAKE_SOURCE_DIR}/tests/CMakeLists.txt)
+# Conditionally enable testing; to use, pass -DBUILD_TESTING=ON to CMake, e.g.,
+# cmake -S . -B build -DBUILD_TESTING=ON
+# ctest --test-dir build --output-on-failure
+if(BUILD_TESTING)
 # New in version 3.29.
-# If CMAKE_SKIP_TEST_ALL_DEPENDENCY is explicitly set to FALSE, then the test target will depend on the all target. 
-# When the test target is built, e.g., via make test, the all target will be built first, and then the tests will run.
+# If CMAKE_SKIP_TEST_ALL_DEPENDENCY is explicitly set to FALSE, 
+# then the test target will depend on the all target. 
+# When the test target is built, e.g., via make test, the all target will be built first, 
+# and then the tests will run.
   set(CMAKE_SKIP_TEST_ALL_DEPENDENCY false)
   enable_testing()
   add_subdirectory(tests)

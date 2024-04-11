@@ -91,15 +91,15 @@ int all_joint_test(cobot::MyCobotSimple &mc) {
   [[maybe_unused]] auto print_all = [&]() {
     auto angles = mc.get_angles();
     std::cout << "get_angles   = ";
-    cobot::print_list(std::span{angles});
+    cobot::print_list(std::cout, std::span{angles});
 
     auto coords = mc.get_coords();
     std::cout << "get_coords   = ";
-    cobot::print_list(std::span{coords});
+    cobot::print_list(std::cout, std::span{coords});
 
     auto encoders = mc.get_encoders();
     std::cout << "get_encoders = ";
-    cobot::print_list(std::span{encoders});
+    cobot::print_list(std::cout, std::span{encoders});
   };
 
   [[maybe_unused]] auto print_joint = [&](cobot::Joint joint) {

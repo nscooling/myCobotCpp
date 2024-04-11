@@ -3,12 +3,8 @@
 
 #include <string>
 
-namespace cobot {
-
-namespace ubuntu {
+namespace cobot::ubuntu {
 auto find_port() -> std::string;
-}
-
-} // namespace cobot
+} // namespace cobot::ubuntu
 
 #endif // _LINUX_UTILITIES_H_
