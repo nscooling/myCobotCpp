@@ -125,7 +125,8 @@ public:
   // from 0 to 4096 ( The range should be positively related to the range of
   // each joint )  , the length range of the array is 6. Specified Speed =
   // speed, range from 0~100unit %
-  //     set_encoders()
+  auto set_encoders(Encoders const &encoders, std::uint8_t speed = DefaultSpeed)
+      -> void;
 
   //     get_speed()
   //     set_speed() *
@@ -146,7 +147,7 @@ public:
 
   //     set_servo_data()
   //     get_servo_data()
-  //     set_servo_calibration()
+  auto set_servo_calibration(Joint joint) -> void;
   //     release_servo()
   //     focus_servo()
 

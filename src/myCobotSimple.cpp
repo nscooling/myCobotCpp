@@ -63,6 +63,17 @@ auto angles_to_raw(const cobot::Angles &angles) {
   return raw_angles;
 }
 
+auto encodes_to_u8(cobot::Encoders const &encoders) {
+  std::array<std::uint8_t, 12> raw_encoders{};
+  auto raw_iter = std::begin(raw_encoders);
+  for (auto encoder : encoders) {
+    auto [high_byte, low_byte] = to_u8(encoder);
+    *raw_iter++ = high_byte;
+    *raw_iter++ = low_byte;
+  }
+  return raw_encoders;
+}
+
 } // namespace
 
 namespace cobot {
@@ -221,6 +232,18 @@ auto MyCobotSimple::is_all_servo_enable() -> bool {
 auto MyCobotSimple::set_encoder(Joint joint, std::uint16_t encoder) -> void {
   auto [high_byte, low_byte] = to_u8(encoder);
   serial->write(command::set_encoder, std::uint8_t(joint), high_byte, low_byte);
+}
+
+auto MyCobotSimple::set_encoders(Encoders const &encoders, std::uint8_t speed)
+    -> void {
+  auto [p0, p1, p2, p3, p4, p5, p6, p7, p8, p9, p10, p11] =
+      encodes_to_u8(encoders);
+  serial->write(command::set_encoders, p0, p1, p2, p3, p4, p5, p6, p7, p8, p9,
+                p10, p11, speed);
+}
+
+auto MyCobotSimple::set_servo_calibration(Joint joint) -> void {
+  serial->write(command::set_servo_calibration, std::uint8_t(joint));
 }
 
 } // namespace cobot

@@ -3,6 +3,7 @@
 #include <fstream>
 #include <iostream>
 #include <thread>
+#include <chrono>
 // #include <print>
 // #include <fstream>
 
@@ -35,6 +36,9 @@ using cobot::Red;
 ////////////////////////////////////////////////////////////////////////////////
 
 [[maybe_unused]] static int all_joint_test(cobot::MyCobotSimple &mc);
+[[maybe_unused]] static void calibrate(cobot::MyCobotSimple &mc);
+
+constexpr cobot::Angles home{0.0f, 0.0f, 0.0f, 0.0f, 0.0f};
 
 #include "myCobotComms.h"
 
@@ -75,32 +79,73 @@ int main(int argc, char *argv[]) {
     }
     std::cout << "Robot is connected\n";
     all_joint_test(mc);
+    // calibrate(mc);
   } else {
     pseduo_port_test(port, pseudo_port);
   }
   return 0;
 }
 
+// lambda functions
+static auto print_all(cobot::MyCobotSimple &mc) {
+  auto angles = mc.get_angles();
+  std::cout << "get_angles   = ";
+  cobot::print_list(std::cout, std::span{angles});
+
+  auto coords = mc.get_coords();
+  std::cout << "get_coords   = ";
+  cobot::print_list(std::cout, std::span{coords});
+
+  auto encoders = mc.get_encoders();
+  std::cout << "get_encoders = ";
+  cobot::print_list(std::cout, std::span{encoders});
+};
+
+////////////////////////////////////////////////////////////////////////////////
+//
+// Calibrate
+//
+void calibrate(cobot::MyCobotSimple &mc) {
+  std::cout << "Calibrating...\n";
+  // std::this_thread::sleep_for(1s);
+  // std::cout << "Move Joints to calibration position: enter 'c' when done\n";
+  // char c;
+  // std::cin >> c;
+  // print_all(mc);
+  // cobot::Encoders encoders{2048, 2048, 2048, 2048, 2048, 2048};
+  // mc.set_encoders(encoders);
+
+  mc.send_angles(home, 50);
+  std::this_thread::sleep_for(2s);
+  print_all(mc);
+  std::cout << "Calibrating\n";
+  mc.release_all_servos();
+  std::this_thread::sleep_for(1s);
+  auto ch = std::cin.get();
+  do {
+    print_all(mc);
+    ch = std::cin.get();
+  }while(ch != 'c' && ch != 'C');
+
+  mc.set_servo_calibration(cobot::Joint::J1);
+  mc.set_servo_calibration(cobot::Joint::J2);
+  mc.set_servo_calibration(cobot::Joint::J3);
+  mc.set_servo_calibration(cobot::Joint::J4);
+  mc.set_servo_calibration(cobot::Joint::J5);
+  mc.set_servo_calibration(cobot::Joint::J6);
+  std::this_thread::sleep_for(1s);
+  mc.set_encoder(cobot::Joint::J1, 1024);
+  std::this_thread::sleep_for(2s);
+  print_all(mc);
+  mc.send_angles(home, 50);
+  std::this_thread::sleep_for(2s);
+  print_all(mc);
+}
 ////////////////////////////////////////////////////////////////////////////////
 //
 // Test Movement of all Joints by 90deg
 //
 int all_joint_test(cobot::MyCobotSimple &mc) {
-
-  // lambda functions
-  [[maybe_unused]] auto print_all = [&]() {
-    auto angles = mc.get_angles();
-    std::cout << "get_angles   = ";
-    cobot::print_list(std::cout, std::span{angles});
-
-    auto coords = mc.get_coords();
-    std::cout << "get_coords   = ";
-    cobot::print_list(std::cout, std::span{coords});
-
-    auto encoders = mc.get_encoders();
-    std::cout << "get_encoders = ";
-    cobot::print_list(std::cout, std::span{encoders});
-  };
 
   [[maybe_unused]] auto print_joint = [&](cobot::Joint joint) {
     std::cout << "J" << static_cast<int>(joint)
@@ -114,32 +159,34 @@ int all_joint_test(cobot::MyCobotSimple &mc) {
     mc.send_angle(joint, angle, 50);
     std::this_thread::sleep_for(3s);
     print_joint(joint);
-    print_all();
+    print_all(mc);
 
     std::cout << "setting J" << static_cast<int>(joint) << " to 0.0f\n";
     mc.send_angle(joint, 0.0f, 50);
     std::this_thread::sleep_for(3s);
     print_joint(joint);
-    print_all();
+    print_all(mc);
   };
 
   mc.set_color(cobot::Green);
-  // print_all();
+  // print_all(mc);
 
   constexpr cobot::Angles home{0.0f, 0.0f, 0.0f, 0.0f, 0.0f};
   std::cout << "setting all to 0.0f\n";
   mc.send_angles(home, 50);
   std::this_thread::sleep_for(1s);
-  print_all();
+  print_all(mc);
 
-  mc.set_encoder(cobot::Joint::J6, 2048);
-  mc.set_encoder(cobot::Joint::J5, 2048);
-  mc.set_encoder(cobot::Joint::J4, 2048);
-  mc.set_encoder(cobot::Joint::J3, 2048);
-  mc.set_encoder(cobot::Joint::J2, 2048);
-  mc.set_encoder(cobot::Joint::J1, 2048);
+  cobot::Encoders encoders{2000, 2000, 2000, 2000, 2000, 2000};
+  // mc.set_encoder(cobot::Joint::J6, 2048);
+  // mc.set_encoder(cobot::Joint::J5, 2048);
+  // mc.set_encoder(cobot::Joint::J4, 2048);
+  // mc.set_encoder(cobot::Joint::J3, 2048);
+  // mc.set_encoder(cobot::Joint::J2, 2048);
+  // mc.set_encoder(cobot::Joint::J1, 2048);
+  mc.set_encoders(encoders);
   std::this_thread::sleep_for(2s);
-  print_all();
+  print_all(mc);
 
   move_by_90(cobot::Joint::J6, 90.0f);
   move_by_90(cobot::Joint::J5, 90.0f);
@@ -150,11 +197,11 @@ int all_joint_test(cobot::MyCobotSimple &mc) {
 
   //  mc.set_encoder(cobot::Joint::J5, 1031);
   // std::this_thread::sleep_for(2s);
-  //   print_all();
+  //   print_all(mc);
 
   // mc.set_encoder(cobot::Joint::J6, 2048);
   // std::this_thread::sleep_for(2s);
-  //   print_all();
+  //   print_all(mc);
 
   mc.set_color(cobot::Black);
   mc.send_angles(home, 50); // mc.set_color(0, 0, 0);

@@ -1,6 +1,10 @@
 #include "myCobotSimple.h"
 #include "gtest/gtest.h"
 #include <string>
+#include <thread>
+#include <chrono>
+
+using namespace std::chrono_literals;
 
 extern std::string port;
 
@@ -44,4 +48,19 @@ TEST_F(myCobotTests, servosAreEnabled) {
 
 TEST_F(myCobotTests, allServosAreEnabled) {
   ASSERT_TRUE(mc.is_all_servo_enable());
+}
+
+
+TEST_F(myCobotTests, homeTest) {
+  constexpr cobot::Angles home{0.0f, 0.0f, 0.0f, 0.0f, 0.0f};
+  mc.send_angles(home, 50);
+  std::this_thread::sleep_for(2s);
+  auto [a1, a2, a3, a4, a5, a6] = mc.get_angles();
+
+  ASSERT_NEAR(a1, 0.0f, 1.0f);
+  ASSERT_NEAR(a2, 0.0f, 1.0f);
+  ASSERT_NEAR(a3, 0.0f, 1.0f);
+  ASSERT_NEAR(a4, 0.0f, 1.0f);
+  ASSERT_NEAR(a5, 0.0f, 1.0f);
+  ASSERT_NEAR(a6, 0.0f, 1.0f);
 }
